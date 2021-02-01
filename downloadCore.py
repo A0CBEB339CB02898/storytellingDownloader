@@ -7,7 +7,7 @@ import re
 class downloadCore():
     title=""
     pic_url=""
-    album_info=""
+    detailed_info=""
     str_total_episode_num=""
 
     def get_album_info(self,album_num):
@@ -40,6 +40,9 @@ class downloadCore():
 g=downloadCore()
 g.get_album_info("3090")
 g.title
+g.detailed_info
+g.pic_url
+g.str_total_episode_num
 
 def download(start_episode_num,end_episode_num,program,save_path,filename_prefix,filename_suffix = "回.mp3",root_url="http://www.zgpingshu.com/playdata/"):
     '''
