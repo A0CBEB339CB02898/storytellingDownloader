@@ -18,8 +18,8 @@ class GUI():
     var_option_start = StringVar()
     var_option_end = StringVar()
 
-    frame1 = Frame(window,height = 450,width = 600)
-    frame2 = Frame(window,height = 450,width = 600)
+    frame1 = Frame(window,height = 350,width = 600)
+    frame2 = Frame(window,height = 350,width = 600)
     def __init__(self):
         self.init_Window()
         self.first_interface()
@@ -29,7 +29,7 @@ class GUI():
         self.window.title('粤语评书下载器')
         screen_width = self.window.winfo_screenwidth()  # 屏幕尺寸
         screen_height = self.window.winfo_screenheight()
-        window_width, window_height = 600, 450
+        window_width, window_height = 600, 350
         x, y = (screen_width - window_width) / 2, (screen_height - window_height) / 3
         size = '%dx%d+%d+%d' % (window_width, window_height, x, y)
         self.window.geometry(size)  # 初始化窗口大小
@@ -44,7 +44,7 @@ class GUI():
         self.frame1.pack(side='left')
         label_album_num = Label(self.frame1, text='请输入作品编号', cursor='xterm',font=("微软雅黑", 12))
         self.var_album_num_text = StringVar()
-        entry_album_num = Entry(self.frame1, relief=RAISED, fg='gray', bd=2, width=58,textvariable=self.var_album_num_text, cursor='xterm')
+        entry_album_num = Entry(self.frame1, relief=SOLID, fg='black', bd=1,width=40,textvariable=self.var_album_num_text, cursor='xterm',font=("微软雅黑", 12))
         button_to_2step=Button(self.frame1, text='下一步',command=self.second_interface,height=1, width=15, relief=RAISED, bd=4, activebackground='gray',
                       activeforeground='white', cursor='hand2',font=("微软雅黑", 12))
         
@@ -87,11 +87,11 @@ class GUI():
         #标题与信息
         label_album_title = Label(self.frame2, text=self.downlader.title, cursor='xterm',font=("微软雅黑", 18))
         label_album_info = Label(self.frame2, text=self.downlader.detailed_info, cursor='xterm',anchor='w',font=("微软雅黑", 10))
-        # label_cut_off = Label(self.frame2, text="——————————————————————————————————————————————————————————————————————————", cursor='xterm',anchor='w',font=("微软雅黑", 10))
+        label_cut_off = Label(self.frame2, text="—————————————————————————————————————", cursor='xterm',anchor='w',font=("微软雅黑", 10))
         #界面布局
-        label_album_title.grid(row=0,column=1,rowspan=2,padx=10,pady=10,sticky = N)
-        label_album_info.grid(row=0,column=1,padx=10,sticky = S)
-        # label_cut_off.grid(row=1,column=1,padx=10,sticky = S)
+        label_album_title.grid(row=0,column=1,columnspan=2,padx=10,pady=10,sticky = N)
+        label_album_info.grid(row=0,column=1,columnspan=2,padx=10,sticky = S)
+        label_cut_off.grid(row=1,column=0,columnspan=3,sticky = S)
         #集数选项卡label
         label_start_episode=Label(self.frame2, text="请选择开始的集数", cursor='xterm',font=("微软雅黑", 12))
         label_end_episode=Label(self.frame2, text="请选择结束的集数", cursor='xterm',font=("微软雅黑", 12))
@@ -109,13 +109,13 @@ class GUI():
                 episode_options.append(i+1)
 
         self.var_option_start.set(episode_options[0])
-        option_start = OptionMenu(self.frame2, self.var_option_start, *episode_options,command=self.select_part_episode,font=("微软雅黑", 10))
+        option_start = OptionMenu(self.frame2, self.var_option_start, *episode_options,command=self.select_part_episode)
         #界面布局
         option_start.grid(row=2,column=1,padx=10,sticky = W)
 
         #集数选项卡end
         self.var_option_end.set(episode_options[len(episode_options)-1])
-        option_end = OptionMenu(self.frame2, self.var_option_end, *episode_options,command=self.select_part_episode,font=("微软雅黑", 10))
+        option_end = OptionMenu(self.frame2, self.var_option_end, *episode_options,command=self.select_part_episode)
         #界面布局
         option_end.grid(row=3,column=1,padx=10,sticky = W)
 
@@ -123,12 +123,12 @@ class GUI():
         check=Checkbutton(self.frame2, text = "下载全部", variable = self.is_all_episode,onvalue = 'T', offvalue = 'F',command=self.select_all_episode,font=("微软雅黑", 12))
         check.select()
         #界面布局
-        check.grid(row=3,column=2,sticky = S)
+        check.grid(row=2,column=2,sticky = S)
         
         #下载按钮
         button_to_3step=Button(self.frame2, text='确定',command=self.third_interface,height=1, width=15, relief=RAISED, bd=4, activebackground='gray',
                 activeforeground='white', cursor='hand2',font=("微软雅黑", 12))
-        button_to_3step.grid(row=4,column=2)
+        button_to_3step.grid(row=3,column=2)
 
     #更新复选框与option框的状态
     def select_all_episode(self):
@@ -149,3 +149,4 @@ class GUI():
 
 g=GUI()
 # g.var_album_num_text
+
