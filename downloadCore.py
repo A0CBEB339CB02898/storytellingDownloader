@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 import os
 import re
 
+import threading
+
 class downloadCore():
     title=""
     author=""
@@ -14,7 +16,6 @@ class downloadCore():
     download_data_block=0
     data_block_size=0
     file_size=0
-
 
     #获取专辑信息
     def get_album_info(self,album_num):

@@ -7,6 +7,7 @@ from PIL import Image, ImageTk
 from urllib.request import urlopen
 import threading
 
+from thread_download import thread_download
 from downloadCore import downloadCore
 import time
 
@@ -272,12 +273,15 @@ class GUI():
     def thread_it(self):
         dowloader=downloadCore()
         # 线程1
-        thread1 = threading.Thread(target=dowloader.download,args=(int(self.var_option_start.get()),int(self.var_option_end.get()),self.var_album_num_text.get(),self.var_save_path.get(),self.var_filename_prefix.get()))
-        thread1.start()
-        print("线程1启动")
+        # thread1 = threading.Thread(target=dowloader.download,args=(int(self.var_option_start.get()),int(self.var_option_end.get()),self.var_album_num_text.get(),self.var_save_path.get(),self.var_filename_prefix.get()))
+        thread1=thread_download(int(self.var_option_start.get()),int(self.var_option_end.get()),self.var_album_num_text.get(),self.var_save_path.get(),self.var_filename_prefix.get())
+        thread1.thread_it()
+        # thread1.setDaemon(True)
+        # thread1.start()
+        # print("线程1启动")
 
-        thread1.join()
-        print("线程1关闭")
+        # thread1.join()
+        # print("线程1关闭")
 
 if __name__ == "__main__":
     g=GUI()
