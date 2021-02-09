@@ -249,7 +249,7 @@ class GUI():
         self.canvas_total.grid(row=2,column=1,columnspan=7,pady=30,padx=10,sticky = W)
         # 进度条填充
         out_rec_total = self.canvas_total.create_rectangle(0, 0, self.progress_bar_width*4, self.progress_bar_height, outline="white", width=1)
-        self.fill_rec_total = self.canvas_total.create_rectangle(0, 0, self.progress_bar_width*3, self.progress_bar_height, outline="", width=0, fill="green")
+        self.fill_rec_total = self.canvas_total.create_rectangle(0, 0, 0, 0, outline="", width=0, fill="green")
 
         #下载集数进度label
         self.var_finish_episode_text  = StringVar()
@@ -319,6 +319,7 @@ class GUI():
                 and dowloader4.get_is_finish():
 
                 self.scrolled_text.insert(INSERT, "所有任务下载完成" + '\n')
+                self.scrolled_text.see(END)
                 break
 
     def assistant_downloader(self,dowloader:downloadCore,dis:distributor,thr_name):
@@ -335,6 +336,7 @@ class GUI():
             dowloader.download(should_download_episode_num,should_download_episode_num,self.var_album_num_text.get(),self.var_save_path.get(),self.var_filename_prefix.get())
             self.download_finish_episode_int=self.download_finish_episode_int+1#主进度条标记
             self.scrolled_text.insert(INSERT, "{}{}回.mp3 下载完成".format(self.var_filename_prefix.get(),should_download_episode_num) + '\n')
+            self.scrolled_text.see(END)
         #下载器下载完成标识
         dowloader.set_is_finish(True)
         print(thr_name+" stop")
