@@ -7,13 +7,13 @@ import io
 from PIL import Image, ImageTk
 from urllib.request import urlopen
 import threading
+import time
+import requests
 
-# from thread_download import thread_download
 from downloadCore import downloadCore
 from distributor import distributor
-import time
 
-import requests
+
 class GUI(): 
     def __init__(self):
         # self.init_Window()
@@ -298,7 +298,6 @@ class GUI():
         #界面布局
         self.button_start_pause.grid(row=4,column=6,pady=10,columnspan=3)
         
-        self.window.mainloop()
 
     #已经开始下载时点解开始下载按钮展示对话框    
     def show_already_start(self):
@@ -478,4 +477,5 @@ class GUI():
 g=GUI()
 g.init_Window()
 g.first_interface()
+g.window.mainloop()
 
