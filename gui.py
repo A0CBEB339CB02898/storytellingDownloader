@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.scrolledtext import ScrolledText
 from tkinter.filedialog import askdirectory
+import tkinter.messagebox 
 
 import io
 from PIL import Image, ImageTk
@@ -29,16 +30,16 @@ class GUI():
         self.var_filename_prefix = StringVar()
         self.var_save_path = StringVar()
            
-        self.frame1 = Frame(self.window,height = 550,width = 600)
-        self.frame2 = Frame(self.window,height = 550,width = 600)
-        self.frame3 = Frame(self.window,height = 550,width = 600)
+        self.frame1 = Frame(self.window,height = 530,width = 600)
+        self.frame2 = Frame(self.window,height = 530,width = 600)
+        self.frame3 = Frame(self.window,height = 530,width = 600)
         # self.third_interface()
 
     def init_Window(self):#初始化窗口
         self.window.title('粤语评书下载器')
         screen_width = self.window.winfo_screenwidth()  # 屏幕尺寸
         screen_height = self.window.winfo_screenheight()
-        window_width, window_height = 600, 550
+        window_width, window_height = 600, 530
         x, y = (screen_width - window_width) / 2, (screen_height - window_height) / 3
         size = '%dx%d+%d+%d' % (window_width, window_height, x, y)
         self.window.geometry(size)  # 初始化窗口大小
@@ -48,24 +49,26 @@ class GUI():
     
     #自定义关闭窗口函数
     def customized_window_destory_function(self):
-        print("窗口关闭")
         if 'self.thread_main_downloader' in vars():
+            #似乎是无效的 但是没影响功能
             print("主下载线程对象关闭")
             self.thread_main_downloader.join()
+        #关闭窗口停止标识
+        self.main_stop_flag=True
         self.frame1.destroy()
         self.frame2.destroy()
         self.frame3.destroy()
         self.window.destroy()
+        print("窗口关闭")
 
     def first_interface(self):
         #第一页界面
         # print("打开第一个页面")
-
         self.frame1.pack(side='left')
         label_album_num = Label(self.frame1, text='请输入作品编号', cursor='xterm',font=("微软雅黑", 12))
         self.var_album_num_text = StringVar()
         entry_album_num = Entry(self.frame1, relief=SOLID, fg='black', bd=1,width=40,textvariable=self.var_album_num_text, cursor='xterm',font=("微软雅黑", 12))
-        button_to_2step=Button(self.frame1, text='下一步',command=self.second_interface,height=1, width=15, relief=RAISED, bd=4, activebackground='gray',
+        button_to_2step=Button(self.frame1, text='下一步',command=self.first_2_second_is_legal_input,height=1, width=15, relief=RAISED, bd=4, activebackground='gray',
                       activeforeground='white', cursor='hand2',font=("微软雅黑", 12))
         
         #界面布局
@@ -73,11 +76,29 @@ class GUI():
         entry_album_num.place(relx=0.56, rely=0.12, anchor=CENTER)
         button_to_2step.place(relx=0.80, rely=0.30, anchor=CENTER)
 
+    #窗口跳转前的数据输入合法性检验
+    def first_2_second_is_legal_input(self):
+        if(self.var_album_num_text.get()==""):
+            tkinter.messagebox.showerror('错误','请输入作品编号！')
+            self.first_interface()
+        else:
+            try:
+                #请求专辑信息
+                self.infoGetter.get_album_info(self.var_album_num_text.get())
+
+                self.second_interface()
+            except AttributeError as entry_album_num_error:
+                tkinter.messagebox.showerror('错误','未获取到专辑信息')
+                print(entry_album_num_error)
+            except requests.exceptions.ReadTimeout as time_out_error:
+                tkinter.messagebox.showerror('错误','连接超时')
+                print(time_out_error)
+            
     def second_interface(self):
+
         #清空页面
         self.frame1.destroy()
-        #请求专辑信息
-        self.infoGetter.get_album_info(self.var_album_num_text.get())
+
 
         #第二页界面
         # self.frame2.grid(row=0,column=0,rowspan=3,columnspan=4)
@@ -167,10 +188,10 @@ class GUI():
         button_choice.grid(row=5,column=2,pady=3,sticky = E)
 
         #下载按钮
-        button_to_3step=Button(self.frame2, text='确定',command=self.third_interface,height=1, width=15, relief=RAISED, bd=4, activebackground='gray',
+        self.button_to_3step=Button(self.frame2, text='下一步',command=self.second_2_third_is_legal_input,height=1, width=15, relief=RAISED, bd=4, activebackground='gray',
                 activeforeground='white', cursor='hand2',font=("微软雅黑", 12))
         #界面布局
-        button_to_3step.grid(row=6,pady=20,column=2,sticky = E)
+        self.button_to_3step.grid(row=6,pady=20,column=2,sticky = E)
 
     #更新复选框与option框的状态
     def select_all_episode(self):
@@ -188,6 +209,15 @@ class GUI():
         # return title.replace("粤语评书","")+"-"+author
         self.var_filename_prefix.set(title)
         return title
+    
+    #窗口跳转前的数据合法性检验
+    def second_2_third_is_legal_input(self):
+        if self.var_save_path.get()=="":
+            tkinter.messagebox.showerror('错误','请选择保存路径')
+        elif self.var_save_path.get()=="":
+            tkinter.messagebox.showerror('错误','请输入文件保存前缀')
+        else:
+            self.third_interface()
 
     def third_interface(self):
         #清空页面
@@ -259,18 +289,28 @@ class GUI():
         
 
         # 可滚动的多行文本区域
-        self.scrolled_text = ScrolledText(self.frame3, relief=GROOVE, bd=4, height=20, width=70, cursor='xterm')
+        self.scrolled_text = ScrolledText(self.frame3, relief=GROOVE, bd=4, height=12, width=55, cursor='xterm',font=("微软雅黑", 11))
         self.scrolled_text.grid(row=3,column=0,columnspan=8)
 
         #暂停开始按钮
-        button_start_pause=Button(self.frame3, text='开始',command=self.start_download,height=1, width=10, relief=RAISED, bd=4, activebackground='gray',
+        self.button_start_pause=Button(self.frame3, text='开始',command=self.start_download,height=1, width=10, relief=RAISED, bd=4, activebackground='gray',
                 activeforeground='white', cursor='hand2',font=("微软雅黑", 12))
         #界面布局
-        button_start_pause.grid(row=4,column=6,pady=10,columnspan=3)
+        self.button_start_pause.grid(row=4,column=6,pady=10,columnspan=3)
         
         self.window.mainloop()
 
+    #已经开始下载时点解开始下载按钮展示对话框    
+    def show_already_start(self):
+        tkinter.messagebox.showinfo('提示','下载已开始')
+
     def start_download(self):
+        #暂停开始按钮
+        self.button_start_pause=Button(self.frame3, text='下载中...',command=self.show_already_start,height=1, width=10, relief=RAISED, bd=4, activebackground='gray',
+                activeforeground='white', cursor='hand2',font=("微软雅黑", 12))
+        #界面布局
+        self.button_start_pause.grid(row=4,column=6,pady=10,columnspan=3)
+
         self.thread_main_downloader=threading.Thread(target=self.main_downloader,args=())
         self.thread_main_downloader.setDaemon(True)
         # '开始下载' + self.infoGetter.title.get()+self.var_option_start.get()+"至"+self.var_option_end.get()+"回"
@@ -278,6 +318,8 @@ class GUI():
         self.thread_main_downloader.start()
         
     def main_downloader(self):
+        #关闭窗口停止标识
+        self.main_stop_flag=False
         dowloader1=downloadCore(False)
         dowloader2=downloadCore(False)
         dowloader3=downloadCore(False)
@@ -321,6 +363,7 @@ class GUI():
                 self.scrolled_text.insert(INSERT, "所有任务下载完成" + '\n')
                 self.scrolled_text.see(END)
                 break
+        
 
     def assistant_downloader(self,dowloader:downloadCore,dis:distributor,thr_name):
         flag=True
@@ -329,11 +372,16 @@ class GUI():
             if should_download_episode_num==None:
                 flag=False
                 break
+            
+
             print(thr_name+" downloading "+str(should_download_episode_num))
 
             self.scrolled_text.insert(INSERT, '正在下载 ' + str(should_download_episode_num) +"..."+ '\n')
 
             dowloader.download(should_download_episode_num,should_download_episode_num,self.var_album_num_text.get(),self.var_save_path.get(),self.var_filename_prefix.get())
+            #关闭窗口停止标识
+            if self.main_stop_flag==True:
+                break
             self.download_finish_episode_int=self.download_finish_episode_int+1#主进度条标记
             self.scrolled_text.insert(INSERT, "{}{}回.mp3 下载完成".format(self.var_filename_prefix.get(),should_download_episode_num) + '\n')
             self.scrolled_text.see(END)
@@ -355,6 +403,9 @@ class GUI():
                 # print(total_size)
                 if now_size==total_size and total_size!=0:
                     break
+                #关闭窗口停止标识
+                if self.main_stop_flag==True:
+                    return
 
                 if now_size==0&total_size==0:
                     # canvas.delete("t1")
@@ -397,6 +448,10 @@ class GUI():
         
         while self.download_finish_episode_int<need_download_total_episode:
 
+            #关闭窗口停止标识
+            if self.main_stop_flag==True:
+                return
+
             # 文件大小进度
             time.sleep(0.01)
 
@@ -423,3 +478,4 @@ class GUI():
 g=GUI()
 g.init_Window()
 g.first_interface()
+
