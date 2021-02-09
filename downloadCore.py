@@ -13,15 +13,18 @@ class downloadCore():
     detailed_info=""
     str_total_episode_num=""
 
+
     download_data_block=0
     data_block_size=0
     file_size=0
 
+    def __init__(self,is_finish):
+        self.is_finish=is_finish
     #获取专辑信息
     def get_album_info(self,album_num):
         album_page_url="http://yueyu.zgpingshu.com/"+album_num#测试时注释
         #请求页面
-        r=requests.get(album_page_url,timeout=8)#测试时注释
+        r=requests.get(album_page_url,timeout=10)#测试时注释
         r.encoding = r.apparent_encoding#测试时注释
         
 
@@ -69,10 +72,14 @@ class downloadCore():
         self.download_data_block=a
         self.data_block_size=b
         self.file_size=c
-
+        
+        # print("file_size"+str(self.file_size))
+        # print("data_block_size"+str(self.data_block_size))
+        # print("download_data_block"+str(self.download_data_block))
         per=100.0*a*b/c  
         if per>100:  
-            per=100  
+            per=100
+        # print(per)
 
     #下载
     def download(self,start_episode_num,end_episode_num,program,save_path,filename_prefix,filename_suffix = "回.mp3",root_url="http://www.zgpingshu.com/playdata/"):
@@ -124,6 +131,13 @@ class downloadCore():
             request.urlretrieve(url,save_path+filename,self.cbk)
             start_episode_num=start_episode_num+1
 
+
+    #下载器状态
+    def set_is_finish(self,is_finish):
+        self.is_finish=is_finish
+
+    def get_is_finish(self):
+        return self.is_finish
 # g=downloadCore()
 # g.get_album_info("3090")
 # g.title
