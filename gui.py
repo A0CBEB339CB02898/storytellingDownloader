@@ -201,60 +201,60 @@ class GUI():
         progress_label.grid(row=0,column=0,pady=20,columnspan=2,sticky = W)
 
         # 进度条大小
-        progress_bar_width=90
-        progress_bar_height=20
+        self.progress_bar_width=90
+        self.progress_bar_height=20
 
 
 
         #进度条1
         label_cavas1=Label(self.frame3, text='线程1', cursor='xterm',font=("微软雅黑", 9))
         label_cavas1.grid(row=1,column=0)
-        self.canvas1 = Canvas(self.frame3, width=progress_bar_width, height=progress_bar_height, bg="white")
+        self.canvas1 = Canvas(self.frame3, width=self.progress_bar_width, height=self.progress_bar_height, bg="white")
         self.canvas1.grid(row=1,column=1,padx=2)
         # 进度条填充
-        self.out_rec1 = self.canvas1.create_rectangle(0, 0, progress_bar_width, progress_bar_height, outline="white", width=1)
+        self.out_rec1 = self.canvas1.create_rectangle(0, 0, self.progress_bar_width, self.progress_bar_height, outline="white", width=1)
         self.fill_rec1 = self.canvas1.create_rectangle(0, 0, 0, 0, outline="", width=0, fill="green")
 
         # 进度条2
         label_cavas2=Label(self.frame3, text='线程2', cursor='xterm',font=("微软雅黑", 9))
         label_cavas2.grid(row=1,column=2)
-        self.canvas2 = Canvas(self.frame3, width=progress_bar_width, height=progress_bar_height, bg="white")
+        self.canvas2 = Canvas(self.frame3, width=self.progress_bar_width, height=self.progress_bar_height, bg="white")
         self.canvas2.grid(row=1,column=3,padx=2)
         # 进度条填充
-        out_rec2 = self.canvas2.create_rectangle(0, 0, progress_bar_width, progress_bar_height, outline="white", width=1)
+        out_rec2 = self.canvas2.create_rectangle(0, 0, self.progress_bar_width, self.progress_bar_height, outline="white", width=1)
         self.fill_rec2 = self.canvas2.create_rectangle(0, 0, 0, 0, outline="", width=0, fill="green")
 
         # 进度条3
         label_cavas3=Label(self.frame3, text='线程3', cursor='xterm',font=("微软雅黑", 9))
         label_cavas3.grid(row=1,column=4)
-        self.canvas3 = Canvas(self.frame3, width=progress_bar_width, height=progress_bar_height, bg="white")
+        self.canvas3 = Canvas(self.frame3, width=self.progress_bar_width, height=self.progress_bar_height, bg="white")
         self.canvas3.grid(row=1,column=5,padx=2)
         # 进度条填充
-        out_rec3 = self.canvas3.create_rectangle(0, 0, progress_bar_width, progress_bar_height, outline="white", width=1)
+        out_rec3 = self.canvas3.create_rectangle(0, 0, self.progress_bar_width, self.progress_bar_height, outline="white", width=1)
         self.fill_rec3 = self.canvas3.create_rectangle(0, 0, 0, 0, outline="", width=0, fill="green")
 
         # 进度条4
         label_cavas4=Label(self.frame3, text='线程4', cursor='xterm',font=("微软雅黑", 9))
         label_cavas4.grid(row=1,column=6)
-        self.canvas4 = Canvas(self.frame3, width=progress_bar_width, height=progress_bar_height, bg="white")
+        self.canvas4 = Canvas(self.frame3, width=self.progress_bar_width, height=self.progress_bar_height, bg="white")
         self.canvas4.grid(row=1,column=7,padx=2)
         # 进度条填充
-        out_rec4 = self.canvas4.create_rectangle(0, 0, progress_bar_width, progress_bar_height, outline="white", width=1)
+        out_rec4 = self.canvas4.create_rectangle(0, 0, self.progress_bar_width, self.progress_bar_height, outline="white", width=1)
         self.fill_rec4 = self.canvas4.create_rectangle(0, 0, 0, 0, outline="", width=0, fill="green")
 
         #总进度条
         label_cavas_total=Label(self.frame3, text='总进度', cursor='xterm',font=("微软雅黑", 9))
         label_cavas_total.grid(row=2,column=0,pady=30)
-        canvas_total = Canvas(self.frame3, width=progress_bar_width*4, height=progress_bar_height, bg="white")
-        canvas_total.grid(row=2,column=1,columnspan=7,pady=30,padx=10,sticky = W)
+        self.canvas_total = Canvas(self.frame3, width=self.progress_bar_width*4, height=self.progress_bar_height, bg="white")
+        self.canvas_total.grid(row=2,column=1,columnspan=7,pady=30,padx=10,sticky = W)
         # 进度条填充
-        out_rec_total = canvas_total.create_rectangle(0, 0, progress_bar_width*4, progress_bar_height, outline="white", width=1)
-        fill_rec_total = canvas_total.create_rectangle(0, 0, progress_bar_width*3, progress_bar_height, outline="", width=0, fill="green")
+        out_rec_total = self.canvas_total.create_rectangle(0, 0, self.progress_bar_width*4, self.progress_bar_height, outline="white", width=1)
+        self.fill_rec_total = self.canvas_total.create_rectangle(0, 0, self.progress_bar_width*3, self.progress_bar_height, outline="", width=0, fill="green")
 
         #下载集数进度label
-        finish_episode  = StringVar()
-        finish_episode.set("20/100")
-        finish_episode = Label(self.frame3, textvariable=finish_episode, cursor='xterm',)
+        self.var_finish_episode_text  = StringVar()
+        # self.var_finish_episode_text.set("20/100")
+        finish_episode = Label(self.frame3, textvariable=self.var_finish_episode_text, cursor='xterm',)
         finish_episode.grid(row=2,column=7,sticky=W)
         
 
@@ -263,7 +263,7 @@ class GUI():
         self.scrolled_text.grid(row=3,column=0,columnspan=8)
 
         #暂停开始按钮
-        button_start_pause=Button(self.frame3, text='确定',command=self.start_download,height=1, width=10, relief=RAISED, bd=4, activebackground='gray',
+        button_start_pause=Button(self.frame3, text='开始',command=self.start_download,height=1, width=10, relief=RAISED, bd=4, activebackground='gray',
                 activeforeground='white', cursor='hand2',font=("微软雅黑", 12))
         #界面布局
         button_start_pause.grid(row=4,column=6,pady=10,columnspan=3)
@@ -276,22 +276,15 @@ class GUI():
         # '开始下载' + self.infoGetter.title.get()+self.var_option_start.get()+"至"+self.var_option_end.get()+"回"
         self.scrolled_text.insert(INSERT, "开始下载:{} {} 至 {} 回".format(self.infoGetter.title,self.var_option_start.get(),self.var_option_end.get()) + '\n')
         self.thread_main_downloader.start()
-        # self.thread_downloader1=thread_download(int(self.var_option_start.get()),int(self.var_option_end.get()),self.var_album_num_text.get(),self.var_save_path.get(),self.var_filename_prefix.get())
-        # self.thread_downloader1.thread_it(self.dowloader1)
-
-        # thread_schedule1= threading.Thread(target=self.change_schedule,args=(self.canvas1,self.fill_rec1,self.dowloader1))
-        # thread_schedule1.setDaemon(True)
-        # thread_schedule1.start()
-
-        # self.infoGetter.download(int(self.var_option_start.get()),int(self.var_option_end.get()),self.var_album_num_text.get(),self.var_save_path.get(),self.var_filename_prefix.get())
-    
+        
     def main_downloader(self):
         dowloader1=downloadCore(False)
         dowloader2=downloadCore(False)
         dowloader3=downloadCore(False)
         dowloader4=downloadCore(False)
         dis=distributor(int(self.var_option_start.get()),int(self.var_option_end.get()))
-
+        self.download_finish_episode_int=0
+        thread_main_schedule= threading.Thread(target=self.change_main_schedule,args=())
 
         thread_schedule1= threading.Thread(target=self.change_schedule,args=(self.canvas1,self.fill_rec1,dowloader1))
         thread_schedule2= threading.Thread(target=self.change_schedule,args=(self.canvas2,self.fill_rec2,dowloader2))
@@ -299,7 +292,6 @@ class GUI():
         thread_schedule4= threading.Thread(target=self.change_schedule,args=(self.canvas4,self.fill_rec4,dowloader4))
 
 
-        # thread1 = threading.Thread(target=dowloader1.download,args=(should_download_episode_num,int(self.var_option_end.get()),self.var_album_num_text.get(),self.var_save_path.get(),self.var_filename_prefix.get()))
         thread_download1 = threading.Thread(name="thread_download1",target=self.assistant_downloader,args=(dowloader1,dis,"thread_download1"))
         thread_download2 = threading.Thread(name="thread_download2",target=self.assistant_downloader,args=(dowloader2,dis,"thread_download2"))
         thread_download3 = threading.Thread(name="thread_download3",target=self.assistant_downloader,args=(dowloader3,dis,"thread_download3"))
@@ -308,8 +300,9 @@ class GUI():
 
         th_download = [thread_download1,thread_download2,thread_download3,thread_download4]
         th_schedule =[thread_schedule1,thread_schedule2,thread_schedule3,thread_schedule4]
-        # th = [thread_download1,thread_schedule1]
+        
         th =th_schedule + th_download
+        th.append(thread_main_schedule)
         for t in th:
             t.setDaemon(True)
             print(t.name+" start")
@@ -339,16 +332,8 @@ class GUI():
 
             self.scrolled_text.insert(INSERT, '正在下载 ' + str(should_download_episode_num) +"..."+ '\n')
 
-            # while thread_schedule.isAlive():
-            #     print("isAlive")
-            #     if thread_schedule.isAlive()==False:
-            #         print("die")
-            #         break
-            
-            # print("start")
-            # thread_schedule.start()
-            
             dowloader.download(should_download_episode_num,should_download_episode_num,self.var_album_num_text.get(),self.var_save_path.get(),self.var_filename_prefix.get())
+            self.download_finish_episode_int=self.download_finish_episode_int+1#主进度条标记
             self.scrolled_text.insert(INSERT, "{}{}回.mp3 下载完成".format(self.var_filename_prefix.get(),should_download_episode_num) + '\n')
         #下载器下载完成标识
         dowloader.set_is_finish(True)
@@ -383,7 +368,9 @@ class GUI():
                         canvas.create_text(45, 10, text=size_text, tags="t1")
 
                         # 进度条更新
-                        canvas.coords(fill_rec, (0, 0, 5 + (now_size / total_size) * 90, 20))
+                        canvas.coords(fill_rec, \
+                                (0, 0, 5 + (now_size / total_size) * self.progress_bar_width, \
+                                self.progress_bar_height))
                         self.frame3.update()
 
                         # if round(now_size / total_size * 100, 2) == 100.00:
@@ -399,20 +386,32 @@ class GUI():
             canvas.coords(fill_rec, (0, 0, 0, 0))
         print("进度条stop")
         
+            # 小进度条实现方法
+    
+    #大进度条实现方法
+    def change_main_schedule(self):
+        print("主进度条start")
+        need_download_total_episode=int(self.var_option_end.get())-int(self.var_option_start.get())+1
         
-    # #多线程下载
-    # def thread_it(self):
-    #     # dowloader=downloadCore()
-    #     # 线程1
-    #     # thread1 = threading.Thread(target=dowloader.download,args=(int(self.var_option_start.get()),int(self.var_option_end.get()),self.var_album_num_text.get(),self.var_save_path.get(),self.var_filename_prefix.get()))
-    #     thread1=thread_download(int(self.var_option_start.get()),int(self.var_option_end.get()),self.var_album_num_text.get(),self.var_save_path.get(),self.var_filename_prefix.get())
-    #     thread1.thread_it()
-    #     # thread1.setDaemon(True)
-    #     # thread1.start()
-    #     # print("线程1启动")
+        while self.download_finish_episode_int<need_download_total_episode:
 
-    #     # thread1.join()
-    #     # print("线程1关闭")
+            # 文件大小进度
+            time.sleep(0.01)
+
+            # 进度条更新
+            self.canvas_total.coords(self.fill_rec_total, \
+                (0, 0, 5 + (self.download_finish_episode_int / need_download_total_episode) * self.progress_bar_width*4, \
+                    self.progress_bar_height))
+            self.var_finish_episode_text.set(str(self.download_finish_episode_int)+"/"+ str(need_download_total_episode))
+            self.frame3.update()
+
+
+        self.canvas_total.coords(self.fill_rec_total, \
+            (0, 0, self.progress_bar_width*4, \
+                self.progress_bar_height))
+        self.var_finish_episode_text.set("下载完成")
+        print("主进度条stop")
+
 
 # if __name__ == "__main__":
 #     g=GUI()
