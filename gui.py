@@ -22,7 +22,6 @@ class GUI():
         self.window.protocol('WM_DELETE_WINDOW', self.customized_window_destory_function)#自定义结束窗口的操作 
         
         self.infoGetter=downloadCore(False)
-        self.var_album_num_text=""
         self.is_all_episode = StringVar()
         self.var_option_start = StringVar()
         self.var_option_end = StringVar()
@@ -65,10 +64,10 @@ class GUI():
         #第一页界面
         # print("打开第一个页面")
         self.frame1.pack(side='left')
-        label_album_num = Label(self.frame1, text='请输入作品编号', cursor='xterm',font=("微软雅黑", 12))
+        label_album_url = Label(self.frame1, text='请输入作品主页面链接:', cursor='xterm',font=("微软雅黑", 12))
 
-        self.var_album_num_text = StringVar()
-        entry_album_num = Entry(self.frame1, relief=SOLID, fg='black', bd=1,width=40,textvariable=self.var_album_num_text, cursor='xterm',font=("微软雅黑", 12))
+        self.var_album_url_text = StringVar()
+        entry_album_num = Entry(self.frame1, relief=SOLID, fg='black', bd=1,width=45,textvariable=self.var_album_url_text, cursor='xterm',font=("微软雅黑", 12))
         
         entry_album_num.bind("<Button-3>", lambda x: self.rightKey(x, entry_album_num,right_key_menu_bar))#绑定右键鼠标事件
         
@@ -78,9 +77,9 @@ class GUI():
                       activeforeground='white', cursor='hand2',font=("微软雅黑", 12))
         
         #界面布局
-        label_album_num.place(relx=0.12, rely=0.12, anchor=CENTER)
-        entry_album_num.place(relx=0.56, rely=0.12, anchor=CENTER)
-        button_to_2step.place(relx=0.80, rely=0.30, anchor=CENTER)
+        label_album_url.place(relx=0.20, rely=0.12, anchor=CENTER)
+        entry_album_num.place(relx=0.39, rely=0.20, anchor=CENTER)
+        button_to_2step.place(relx=0.80, rely=0.40, anchor=CENTER)
 
     def cut(self,editor, event=None):
         editor.event_generate("<<Cut>>")
@@ -98,14 +97,14 @@ class GUI():
 
     #窗口跳转前的数据输入合法性检验
     def first_2_second_is_legal_input(self):
-        if(self.var_album_num_text.get()==""):
-            tkinter.messagebox.showerror('错误','请输入作品编号！')
+        if(self.var_album_url_text.get()==""):
+            tkinter.messagebox.showerror('错误','请输入作品主页面链接！')
             self.first_interface()
         else:
             try:
                 #请求专辑信息
-                self.infoGetter.get_album_info(self.var_album_num_text.get())
-
+                self.infoGetter.get_album_info(self.var_album_url_text.get())
+                self.var_album_num_text=self.infoGetter.album_num
                 self.second_interface()
             except AttributeError as entry_album_num_error:
                 tkinter.messagebox.showerror('错误','未获取到专辑信息')
@@ -113,7 +112,10 @@ class GUI():
             except requests.exceptions.ReadTimeout as time_out_error:
                 tkinter.messagebox.showerror('错误','连接超时')
                 print(time_out_error)
-            
+            except requests.exceptions.MissingSchema as url_error:
+                tkinter.messagebox.showerror('错误','链接错误')
+                print(url_error)
+
     def second_interface(self):
 
         #清空页面
@@ -405,7 +407,7 @@ class GUI():
 
             self.scrolled_text.insert(INSERT, '正在下载 ' + str(should_download_episode_num) +"..."+ '\n')
 
-            dowloader.download(should_download_episode_num,should_download_episode_num,self.var_album_num_text.get(),self.var_save_path.get(),self.var_filename_prefix.get())
+            dowloader.download(should_download_episode_num,should_download_episode_num,self.var_album_num_text,self.var_save_path.get(),self.var_filename_prefix.get())
             #关闭窗口停止标识
             if self.main_stop_flag==True:
                 break

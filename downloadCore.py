@@ -12,6 +12,7 @@ class downloadCore():
     pic_url=""
     detailed_info=""
     str_total_episode_num=""
+    album_num=""
 
 
     download_data_block=0
@@ -21,8 +22,8 @@ class downloadCore():
     def __init__(self,is_finish):
         self.is_finish=is_finish
     #获取专辑信息
-    def get_album_info(self,album_num):
-        album_page_url="http://yueyu.zgpingshu.com/"+album_num#测试时注释
+    def get_album_info(self,album_page_url):
+        # album_page_url="http://yueyu.zgpingshu.com/"+album_num#测试时注释 #已舍弃
         #请求页面
         r=requests.get(album_page_url,timeout=10)#测试时注释
         r.encoding = r.apparent_encoding#测试时注释
@@ -35,17 +36,28 @@ class downloadCore():
         # soup = BeautifulSoup(htmlhandle,"html.parser")
 
         # #解析数据
+        url_split=re.split(r'/',album_page_url)
+        self.album_num=num=url_split[len(url_split)-2]
+
         soup = BeautifulSoup(r.text,"html.parser") #测试时注释
         self.title=soup.select_one('#categoryHeader>h1').string
         self.pic_url=soup.select_one('.pingshupic>img').get('src')
+        
         self.detailed_info=""
         self.str_total_episode_num=""
+
         for info in soup.select('.pingshulist>ul>li'):
             if info.string==None:
                 # info.span.a.string
-                # print(info.next_element + info.span.a.string)
-                self.author=info.span.a.string
-                self.detailed_info+=(info.next_element + info.span.a.string +'\n')
+                try:
+                    if info.span.a.string!='':
+                        self.author=info.span.a.string
+                    elif info.a.string!='':
+                        self.author=info.a.string
+                except AttributeError as e:
+                    self.author=re.split(r'([评书])',self.title)[0]
+
+                self.detailed_info+=(info.next_element + self.author +'\n')
             else:
                 # print(info.string)
                 self.detailed_info+=(info.string + '\n')
@@ -138,9 +150,11 @@ class downloadCore():
 
     def get_is_finish(self):
         return self.is_finish
-# g=downloadCore()
-# g.get_album_info("3090")
-# g.title
-# g.detailed_info
-# g.pic_url
-# g.str_total_episode_num
+
+g=downloadCore(False)
+g.get_album_info("http://shantianfang.zgpingshu.com/575/")
+g.title
+g.author
+g.detailed_info
+g.pic_url
+g.str_total_episode_num
