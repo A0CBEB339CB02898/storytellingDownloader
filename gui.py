@@ -66,8 +66,14 @@ class GUI():
         # print("打开第一个页面")
         self.frame1.pack(side='left')
         label_album_num = Label(self.frame1, text='请输入作品编号', cursor='xterm',font=("微软雅黑", 12))
+
         self.var_album_num_text = StringVar()
         entry_album_num = Entry(self.frame1, relief=SOLID, fg='black', bd=1,width=40,textvariable=self.var_album_num_text, cursor='xterm',font=("微软雅黑", 12))
+        
+        entry_album_num.bind("<Button-3>", lambda x: self.rightKey(x, entry_album_num,right_key_menu_bar))#绑定右键鼠标事件
+        
+        right_key_menu_bar = Menu(self.frame1,tearoff=False)#创建一个菜单
+
         button_to_2step=Button(self.frame1, text='下一步',command=self.first_2_second_is_legal_input,height=1, width=15, relief=RAISED, bd=4, activebackground='gray',
                       activeforeground='white', cursor='hand2',font=("微软雅黑", 12))
         
@@ -75,6 +81,20 @@ class GUI():
         label_album_num.place(relx=0.12, rely=0.12, anchor=CENTER)
         entry_album_num.place(relx=0.56, rely=0.12, anchor=CENTER)
         button_to_2step.place(relx=0.80, rely=0.30, anchor=CENTER)
+
+    def cut(self,editor, event=None):
+        editor.event_generate("<<Cut>>")
+    def copy(self,editor, event=None):
+        editor.event_generate("<<Copy>>")
+    def paste(self,editor, event=None):
+        editor.event_generate('<<Paste>>')
+    def rightKey(self,event, editor,right_key_menu_bar):
+        right_key_menu_bar.delete(0,END)
+        # right_key_menu_bar.add_command(label='剪切',command=lambda:self.cut(editor))
+        right_key_menu_bar.add_command(label='粘贴',command=lambda:self.paste(editor))
+        right_key_menu_bar.add_command(label='复制',command=lambda:self.copy(editor))
+    
+        right_key_menu_bar.post(event.x_root,event.y_root)
 
     #窗口跳转前的数据输入合法性检验
     def first_2_second_is_legal_input(self):
@@ -174,7 +194,7 @@ class GUI():
         label_file_save_path.grid(row=5,column=0,sticky = W)
         
         #保存路径相关entry
-        self.var_filename_prefix.set(self.var_filename_prefix_handle(self.infoGetter.title,self.infoGetter.author))
+        self.var_filename_prefix.set(self.infoGetter.title.replace("粤语评书",""))
         entry_filename_prefix = Entry(self.frame2, relief=SOLID, fg='black', bd=1,width=49,textvariable=self.var_filename_prefix, cursor='xterm',font=("微软雅黑", 12))
         entry_file_save_path = Entry(self.frame2, relief=SOLID, fg='black', bd=1,width=38,textvariable=self.var_save_path, cursor='xterm',font=("微软雅黑", 12))
 
@@ -206,9 +226,12 @@ class GUI():
 
     #文件前缀处理
     def var_filename_prefix_handle(self,title,author):
-        # return title.replace("粤语评书","")+"-"+author
-        self.var_filename_prefix.set(title)
-        return title
+        filename_prefix= "{}说书《{}》".format(author,title.replace("粤语评书",""))
+
+        self.var_filename_prefix.set(title.replace("粤语评书",""))
+        return filename_prefix
+        # self.var_filename_prefix.set(title)
+        # return title
     
     #窗口跳转前的数据合法性检验
     def second_2_third_is_legal_input(self):
@@ -358,6 +381,11 @@ class GUI():
                 and dowloader2.get_is_finish() \
                 and dowloader3.get_is_finish() \
                 and dowloader4.get_is_finish():
+                #暂停开始按钮
+                self.button_start_pause=Button(self.frame3, text='完成',command=self.customized_window_destory_function,height=1, width=10, relief=RAISED, bd=4, activebackground='gray',
+                        activeforeground='white', cursor='hand2',font=("微软雅黑", 12))
+                #界面布局
+                self.button_start_pause.grid(row=4,column=6,pady=10,columnspan=3)
 
                 self.scrolled_text.insert(INSERT, "所有任务下载完成" + '\n')
                 self.scrolled_text.see(END)
