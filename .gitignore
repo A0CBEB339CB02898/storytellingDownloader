@@ -1,0 +1,32 @@
+contrl.py
+favicon.ico
+gui.spec
+pingshuwang - 正本本.py
+pingshuwang.py
+test.py
+thread_download.py
+.vscode/launch.json
+__pycache__/distributor.cpython-37.pyc
+__pycache__/downloadCore.cpython-37.pyc
+__pycache__/gui.cpython-37.pyc
+build/gui/Analysis-00.toc
+build/gui/base_library.zip
+build/gui/EXE-00.toc
+build/gui/gui.exe.manifest
+build/gui/PKG-00.pkg
+build/gui/PKG-00.toc
+build/gui/PYZ-00.pyz
+build/gui/PYZ-00.toc
+build/gui/Tree-00.toc
+build/gui/Tree-01.toc
+build/gui/Tree-02.toc
+build/gui/warn-gui.txt
+build/gui/xref-gui.html
+dist/粤语评书下载器v1.0.exe
+dist/粤语评书下载器v1.1.exe
+dist/粤语评书下载器v1.2.exe
+dist/粤语评书下载器v1.3.exe
+contrl.py
+pingshuwang - 正本本.py
+pingshuwang.py
+thread_download.py
