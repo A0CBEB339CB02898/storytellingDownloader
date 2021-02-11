@@ -25,7 +25,7 @@ class downloadCore():
     def get_album_info(self,album_page_url):
         # album_page_url="http://yueyu.zgpingshu.com/"+album_num#测试时注释 #已舍弃
         #请求页面
-        r=requests.get(album_page_url,timeout=10)#测试时注释
+        r=requests.get(album_page_url,timeout=5)#测试时注释
         r.encoding = r.apparent_encoding#测试时注释
         
 
@@ -36,35 +36,41 @@ class downloadCore():
         # soup = BeautifulSoup(htmlhandle,"html.parser")
 
         # #解析数据
-        url_split=re.split(r'/',album_page_url)
-        self.album_num=num=url_split[len(url_split)-2]
+        try:
+            url_split=re.split(r'/',album_page_url)
+            self.album_num=url_split[len(url_split)-2]
 
-        soup = BeautifulSoup(r.text,"html.parser") #测试时注释
-        self.title=soup.select_one('#categoryHeader>h1').string
-        self.pic_url=soup.select_one('.pingshupic>img').get('src')
-        
-        self.detailed_info=""
-        self.str_total_episode_num=""
+            soup = BeautifulSoup(r.text,"html.parser") #测试时注释
 
-        for info in soup.select('.pingshulist>ul>li'):
-            if info.string==None:
-                # info.span.a.string
-                try:
-                    if info.span.a.string!='':
-                        self.author=info.span.a.string
-                    elif info.a.string!='':
-                        self.author=info.a.string
-                except AttributeError as e:
-                    self.author=re.split(r'([评书])',self.title)[0]
+            self.title=soup.select_one('#categoryHeader>h1').get_text()
+            
+            self.pic_url=soup.select_one('.pingshupic>img').get('src')
+            
+            self.detailed_info=""
+            self.str_total_episode_num=""
 
-                self.detailed_info+=(info.next_element + self.author +'\n')
-            else:
-                # print(info.string)
-                self.detailed_info+=(info.string + '\n')
+            for info in soup.select('.pingshulist>ul>li'):
+                if info.string==None:
+                    # info.span.a.string
+                    try:
+                        if info.span.a.string!='':
+                            self.author=info.span.a.string
+                        elif info.a.string!='':
+                            self.author=info.a.string
+                    except AttributeError as e:
+                        self.author=re.split(r'([评书])',self.title)[0]
 
-                if re.match( "长度", info.string):
-                    for i in re.findall("\\d",info.string): #用正则表达式匹配所有数字
-                        self.str_total_episode_num+=i 
+                    self.detailed_info+=(info.next_element + self.author +'\n')
+                else:
+                    # print(info.string)
+                    self.detailed_info+=(info.string + '\n')
+
+                    if re.match( "长度", info.string):
+                        for i in re.findall("\\d",info.string): #用正则表达式匹配所有数字
+                            self.str_total_episode_num+=i 
+        except:
+            self.title=""
+
 
     #获取下载文件大小
     def get_file_size(self,url):
@@ -151,10 +157,14 @@ class downloadCore():
     def get_is_finish(self):
         return self.is_finish
 
-g=downloadCore(False)
-g.get_album_info("http://shantianfang.zgpingshu.com/575/")
-g.title
-g.author
-g.detailed_info
-g.pic_url
-g.str_total_episode_num
+
+
+if __name__ == "__main__":
+    # g=downloadCore(False)
+    # g.get_album_info("http://bjjt.zgpingshu.com/1250/")
+    # # g.get_album_info("http://yueyu.zgpingshu.com/3082/")
+    # g.title
+    # g.author
+    # g.detailed_info
+    # g.pic_url
+    # g.str_total_episode_num

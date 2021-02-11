@@ -105,16 +105,20 @@ class GUI():
                 #请求专辑信息
                 self.infoGetter.get_album_info(self.var_album_url_text.get())
                 self.var_album_num_text=self.infoGetter.album_num
+                
                 self.second_interface()
             except AttributeError as entry_album_num_error:
                 tkinter.messagebox.showerror('错误','未获取到专辑信息')
                 print(entry_album_num_error)
+                self.first_interface()
             except requests.exceptions.ReadTimeout as time_out_error:
                 tkinter.messagebox.showerror('错误','连接超时')
                 print(time_out_error)
+                self.first_interface()
             except requests.exceptions.MissingSchema as url_error:
                 tkinter.messagebox.showerror('错误','链接错误')
                 print(url_error)
+                self.first_interface()
 
     def second_interface(self):
 
@@ -406,14 +410,17 @@ class GUI():
             print(thr_name+" downloading "+str(should_download_episode_num))
 
             self.scrolled_text.insert(INSERT, '正在下载 ' + str(should_download_episode_num) +"..."+ '\n')
-
-            dowloader.download(should_download_episode_num,should_download_episode_num,self.var_album_num_text,self.var_save_path.get(),self.var_filename_prefix.get())
-            #关闭窗口停止标识
-            if self.main_stop_flag==True:
-                break
-            self.download_finish_episode_int=self.download_finish_episode_int+1#主进度条标记
-            self.scrolled_text.insert(INSERT, "{}{}回.mp3 下载完成".format(self.var_filename_prefix.get(),should_download_episode_num) + '\n')
-            self.scrolled_text.see(END)
+            try:
+                dowloader.download(should_download_episode_num,should_download_episode_num,self.var_album_num_text,self.var_save_path.get(),self.var_filename_prefix.get())
+                #关闭窗口停止标识
+                if self.main_stop_flag==True:
+                    break
+                self.download_finish_episode_int=self.download_finish_episode_int+1#主进度条标记
+                self.scrolled_text.insert(INSERT, "{}{}回.mp3 下载完成".format(self.var_filename_prefix.get(),should_download_episode_num) + '\n')
+                self.scrolled_text.see(END)
+            except :
+                self.scrolled_text.insert(INSERT, "遇到错误，请重新下载")
+                self.scrolled_text.see(END)
         #下载器下载完成标识
         dowloader.set_is_finish(True)
         print(thr_name+" stop")
