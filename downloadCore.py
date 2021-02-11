@@ -159,7 +159,7 @@ class downloadCore():
 
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
     # g=downloadCore(False)
     # g.get_album_info("http://bjjt.zgpingshu.com/1250/")
     # # g.get_album_info("http://yueyu.zgpingshu.com/3082/")
